@@ -19,7 +19,7 @@ jobs:
           echo '8b0c3e4ae5d24cc649af97483c50fbc98b55f600ecc81961bb17dac846d2558b  qa/NOMI-23.apk' | sha256sum -c
           signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
           for apk in /tmp/old.apk qa/NOMI-23.apk; do "$signer" verify --print-certs "$apk" > "/tmp/$(basename "$apk").cert"; done
-          diff <(grep 'certificate SHA-256 digest' /tmp/old.apk.cert) <(grep 'certificate SHA-256 digest' /tmp/NOMI-23.apk.cert)
+          diff <(awk '/certificate SHA-256 digest/{print $NF}' /tmp/old.apk.cert) <(awk '/certificate SHA-256 digest/{print $NF}' /tmp/NOMI-23.apk.cert)
       - name: Prepare emulator
         run: |
           sudo chmod 666 /dev/kvm
