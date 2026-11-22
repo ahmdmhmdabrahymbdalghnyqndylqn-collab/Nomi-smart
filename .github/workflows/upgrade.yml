@@ -1,0 +1,31 @@
+name: NOMI 23 in-place upgrade test
+on:
+  push:
+    branches: [nomi-upgrade-23-test]
+  workflow_dispatch:
+permissions:
+  contents: read
+concurrency: nomi-23-install-test
+jobs:
+  upgrade:
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    steps:
+      - uses: actions/checkout@v4
+      - name: Verify both signed APK inputs
+        run: |
+          curl --fail --location --retry 3 'https://nomi-smart-insights-48b2.melodicchair16.chatgpt.site/NomiSmart.apk?v=19' -o /tmp/old.apk
+          echo 'cfa4ce5258539bacd100de22ab815cb64360beef8e5b6c4a0705eb0c4aa54f6e  /tmp/old.apk' | sha256sum -c
+          echo '8b0c3e4ae5d24cc649af97483c50fbc98b55f600ecc81961bb17dac846d2558b  qa/NOMI-23.apk' | sha256sum -c
+          signer=$(find "$ANDROID_HOME/build-tools" -name apksigner | sort -V | tail -1)
+          for apk in /tmp/old.apk qa/NOMI-23.apk; do "$signer" verify --print-certs "$apk" > "/tmp/$(basename "$apk").cert"; done
+          diff <(grep 'certificate SHA-256 digest' /tmp/old.apk.cert) <(grep 'certificate SHA-256 digest' /tmp/NOMI-23.apk.cert)
+      - name: Prepare emulator
+        run: |
+          sudo chmod 666 /dev/kvm
+          pip install uiautomator2==3.3.3
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 30
+          arch: x86_64
+          script: python qa/upgrade.py
