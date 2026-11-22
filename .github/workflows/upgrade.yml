@@ -23,9 +23,8 @@ jobs:
       - name: Prepare emulator
         run: |
           sudo chmod 666 /dev/kvm
-          pip install uiautomator2==3.3.3
       - uses: reactivecircus/android-emulator-runner@v2
         with:
           api-level: 30
           arch: x86_64
-          script: python qa/upgrade.py
+          script: bash qa/check.sh
