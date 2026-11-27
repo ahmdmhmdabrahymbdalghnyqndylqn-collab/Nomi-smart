@@ -1,2 +1,2 @@
-# Web preview
-Four separate routes. GitHub Pages must be enabled for Actions deployment. OAuth requires exact allowlisted redirect URLs for all routes and Google OAuth client configuration. No admin user is assigned yet; admin_summary enforces admin membership and aal2. Web features are limited to authenticated tasks and transactions; native Android features are not implemented on web. Do not market as complete.
+# Local phone preview
+User onboarding requires EG/JO and a syntactically valid mobile number. No Google, SMS or verified identity. Phone is metadata, not authentication. Web user data is localStorage per variant; Android uses SQLite per installation. No cloud sync or real dashboard usage telemetry from local users. Admin separately uses provisioned Supabase email/password and MFA plus admin membership. Never expose personal data or accept arbitrary phone as authentication. Exact reference image unavailable; glass design based on retained description.

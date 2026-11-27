@@ -3,7 +3,7 @@ import type {Currency} from './format';
 export type Task={id:string;title:string;day:string;time:string;kind:'task'|'appointment';category:'personal'|'work'|'study';done:boolean;deleted?:boolean;notifications:string[]};
 export type Entry={id:string;kind:'income'|'expense';minor:number;currency:Currency;note:string;date:string};
 export type Alarm={id:string;label:string;at:string;notification:string};
-export type Data={country:'EG'|'JO';tasks:Task[];entries:Entry[];alarms:Alarm[];theme:'light'|'dark';variant:'green'|'purple';sound:boolean};
+export type Data={country:'EG'|'JO';phone?:string;tasks:Task[];entries:Entry[];alarms:Alarm[];theme:'light'|'dark';variant:'green'|'purple';sound:boolean};
 export const initial:Data={country:'JO',tasks:[],entries:[],alarms:[],theme:'light',variant:process.env.EXPO_PUBLIC_NOMI_VARIANT==='purple'?'purple':'green',sound:true};
 export const Local=createContext<{data:Data;update:(fn:(d:Data)=>Data)=>void}>({data:initial,update:()=>{throw Error('Missing provider')}});
 export const useLocal=()=>useContext(Local);
