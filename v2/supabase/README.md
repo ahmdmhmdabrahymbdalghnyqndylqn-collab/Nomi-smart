@@ -1,0 +1,2 @@
+# Database foundation
+Core migration is written but not applied. Use an isolated local/staging Supabase project and run migration plus RLS tests before connecting the mobile app. No live database was created. Remaining migrations: recurrence, devices, notification inbox, voice actions/idempotency, suggestions, audio catalog, metrics, storage policies and server-only admin RPCs. Profile deletion/account erasure and legacy account linking need a dedicated workflow. Do not run this against existing production.
