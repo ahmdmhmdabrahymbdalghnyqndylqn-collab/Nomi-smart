@@ -1,0 +1,32 @@
+name: Nomi web preview
+on:
+  push:
+    branches: [main]
+    paths: ['.github/workflows/nomi-web-pages.yml']
+  workflow_dispatch:
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+concurrency:
+  group: nomi-pages
+  cancel-in-progress: true
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: f3c221ce5f451e804cbe9da32c2fc9c9e1e39e34
+          persist-credentials: false
+      - run: node --input-type=module --check < v2/web/app.js
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: v2/web
+      - uses: actions/deploy-pages@v4
+        id: deployment
