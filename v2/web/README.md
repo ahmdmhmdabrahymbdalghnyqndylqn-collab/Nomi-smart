@@ -1,0 +1,2 @@
+# Web preview
+Four separate routes. GitHub Pages must be enabled for Actions deployment. OAuth requires exact allowlisted redirect URLs for all routes and Google OAuth client configuration. No admin user is assigned yet; admin_summary enforces admin membership and aal2. Web features are limited to authenticated tasks and transactions; native Android features are not implemented on web. Do not market as complete.

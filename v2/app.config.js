@@ -1,0 +1,1 @@
+module.exports=({config})=>{const v=process.env.EXPO_PUBLIC_NOMI_VARIANT==='purple'?'purple':'green';return {...config,name:'Nomi '+(v==='purple'?'Purple':'Green')+' Preview',slug:'nomi-'+v,scheme:'nomiv2'+v,android:{...config.android,package:'com.nomismart.preview.'+v}}};

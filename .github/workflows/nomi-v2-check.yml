@@ -5,6 +5,9 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+concurrency:
+  group: nomi-v2-build-${{ github.ref }}
+  cancel-in-progress: true
 jobs:
   verify:
     runs-on: ubuntu-latest
@@ -27,6 +30,14 @@ jobs:
     runs-on: ubuntu-latest
     permissions:
       contents: write
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [green, purple]
+    env:
+      EXPO_PUBLIC_NOMI_VARIANT: ${{ matrix.variant }}
+      EXPO_PUBLIC_SUPABASE_URL: https://hybocuzpbvqnlplsehtf.supabase.co
+      EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY: sb_publishable_SNZUlXicdpOUjgJYoAUu-Q_ITUYSZxa
     defaults:
       run:
         working-directory: v2
@@ -41,15 +52,15 @@ jobs:
           java-version: '17'
       - run: npm install --no-audit --no-fund
       - run: npx expo prebuild --platform android --no-install
-      - run: sdkmanager "platforms;android-36" "build-tools;36.0.0"
+      - run: '"$ANDROID_HOME/cmdline-tools/latest/bin/sdkmanager" "platforms;android-36" "build-tools;36.0.0"'
       - run: cd android && chmod +x gradlew && ./gradlew :app:assembleRelease --no-daemon
-      - run: cp android/app/build/outputs/apk/release/app-release.apk Nomi-V2-Preview.apk
+      - run: cp android/app/build/outputs/apk/release/app-release.apk Nomi-${{ matrix.variant }}-Preview.apk
       - uses: actions/upload-artifact@v4
         with:
-          name: Nomi-V2-Preview
-          path: v2/Nomi-V2-Preview.apk
+          name: Nomi-${{ matrix.variant }}-Preview
+          path: v2/Nomi-${{ matrix.variant }}-Preview.apk
           if-no-files-found: error
       - name: Publish explicitly experimental build
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v2-preview-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" Nomi-V2-Preview.apk --target "$GITHUB_SHA" --prerelease --title "Nomi V2 experimental preview" --notes "Local-only preview. Not production; Google/Supabase not configured. Adhan, persistent alarm and migration not complete. No device QA. Separate package."
+        run: gh release create "v2-preview-${{ matrix.variant }}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" "Nomi-${{ matrix.variant }}-Preview.apk" --target "$GITHUB_SHA" --prerelease --title "Nomi ${{ matrix.variant }} experimental preview" --notes "Local preview; cloud sync, Google configuration, full adhan, persistent alarm and device QA not complete. Not for production."
