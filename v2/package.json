@@ -27,7 +27,13 @@
     "react-native-screens": "~4.16.0",
     "react-native-svg": "15.12.1",
     "@supabase/supabase-js": "^2.49.0",
-    "react-native-url-polyfill": "^2.0.0"
+    "react-native-url-polyfill": "^2.0.0",
+    "expo-notifications": "~0.32.0",
+    "expo-speech": "~14.0.0",
+    "expo-sqlite": "~16.0.0",
+    "expo-crypto": "~15.0.0",
+    "expo-speech-recognition": "sdk-54",
+    "expo-localization": "~17.0.0"
   },
   "devDependencies": {
     "typescript": "~5.9.2",

@@ -1,0 +1,4 @@
+import * as N from 'expo-notifications';import {Platform} from 'react-native';
+N.setNotificationHandler({handleNotification:async()=>({shouldShowBanner:true,shouldShowList:true,shouldPlaySound:true,shouldSetBadge:false})});
+export async function schedule(title:string,body:string,when:Date,data:Record<string,string>){if(when.getTime()<=Date.now())throw Error('Past date');if(Platform.OS==='android')await N.setNotificationChannelAsync('nomi-reminders',{name:'Nomi reminders',importance:N.AndroidImportance.MAX,sound:'default',vibrationPattern:[0,500,250,500]});const permission=await N.requestPermissionsAsync();if(!permission.granted)throw Error('Notifications denied');return N.scheduleNotificationAsync({content:{title,body,sound:'default',data},trigger:{type:N.SchedulableTriggerInputTypes.DATE,date:when,channelId:'nomi-reminders'}})}
+export async function cancel(ids:string[]){await Promise.all(ids.map(id=>N.cancelScheduledNotificationAsync(id)))}

@@ -1,11 +1,11 @@
-import React,{createContext,useContext,useState} from 'react';
+import React,{createContext,useContext} from 'react';
 import {View,Text,Pressable,StyleSheet,ScrollView} from 'react-native';
 import {LinearGradient} from 'expo-linear-gradient';
 import {useSafeAreaInsets} from 'react-native-safe-area-context';
 import {useRouter} from 'expo-router';
-import {palette,Mode,Variant} from './theme';
+import {palette,Mode,Variant} from './theme';import {useLocal} from '../domain/local';
 const C=createContext({variant:'green' as Variant,mode:'light' as Mode,toggleMode:()=>{},toggleVariant:()=>{}});
-export function DesignProvider({children}:{children:React.ReactNode}){const [variant,setVariant]=useState<Variant>('green');const [mode,setMode]=useState<Mode>('light');return <C.Provider value={{variant,mode,toggleMode:()=>setMode(m=>m==='light'?'dark':'light'),toggleVariant:()=>setVariant(v=>v==='green'?'purple':'green')}}>{children}</C.Provider>}
+export function DesignProvider({children}:{children:React.ReactNode}){const {data,update}=useLocal();return <C.Provider value={{variant:data.variant,mode:data.theme,toggleMode:()=>update(d=>({...d,theme:d.theme==='light'?'dark':'light'})),toggleVariant:()=>update(d=>({...d,variant:d.variant==='green'?'purple':'green'}))}}>{children}</C.Provider>}
 export function useDesign(){const c=useContext(C);return {...c,p:palette(c.variant,c.mode)}}
 export function T({children,size=16,bold=false,muted=false}:{children:React.ReactNode,size?:number,bold?:boolean,muted?:boolean}){const {p}=useDesign();return <Text style={{color:muted?p.muted:p.text,fontSize:size,fontWeight:bold?'700':'400',textAlign:'right',writingDirection:'rtl',lineHeight:size*1.5}}>{children}</Text>}
 export function Glass({children}:{children:React.ReactNode}){const {p}=useDesign();return <View style={[s.card,{backgroundColor:p.surface,borderColor:p.border}]}>{children}</View>}

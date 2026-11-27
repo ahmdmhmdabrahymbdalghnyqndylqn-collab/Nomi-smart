@@ -1,2 +1,3 @@
-import {Stack} from 'expo-router';import {DesignProvider} from '../src/ui/Design';
-export default function Layout(){return <DesignProvider><Stack screenOptions={{headerShown:false}}/></DesignProvider>}
+import {Stack,useRouter} from 'expo-router';import {useEffect} from 'react';import * as N from 'expo-notifications';import {DesignProvider} from '../src/ui/Design';import {LocalProvider} from '../src/ui/LocalProvider';import {notificationRoute} from '../src/domain/format';import '../src/lib/reminders';
+function Routes(){const r=useRouter();useEffect(()=>{function open(response:N.NotificationResponse){const path=notificationRoute(response.notification.request.content.data);if(path){r.push(path);void N.clearLastNotificationResponseAsync()}}const sub=N.addNotificationResponseReceivedListener(open);void N.getLastNotificationResponseAsync().then(res=>{if(res)open(res)});return()=>sub.remove()},[r]);return <Stack screenOptions={{headerShown:false}}/>}
+export default function Layout(){return <LocalProvider><DesignProvider><Routes/></DesignProvider></LocalProvider>}

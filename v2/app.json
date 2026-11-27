@@ -3,20 +3,28 @@
     "name": "Nomi V2 Preview",
     "slug": "nomi-v2",
     "scheme": "nomiv2preview",
-    "version": "0.1.0",
+    "version": "0.2.0",
     "orientation": "portrait",
     "userInterfaceStyle": "automatic",
     "plugins": [
       "expo-router",
       "expo-secure-store",
-      "expo-web-browser"
+      "expo-web-browser",
+      "expo-notifications",
+      "expo-speech-recognition",
+      "expo-localization"
     ],
     "android": {
       "package": "com.nomismart.preview",
-      "supportsRTL": true
+      "permissions": [
+        "android.permission.SCHEDULE_EXACT_ALARM"
+      ]
     },
     "experiments": {
       "typedRoutes": false
+    },
+    "extra": {
+      "supportsRTL": true
     }
   }
 }

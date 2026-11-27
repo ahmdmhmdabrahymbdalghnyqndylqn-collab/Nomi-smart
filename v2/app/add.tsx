@@ -1,1 +1,1 @@
-import {Screen,Unavailable} from '../src/ui/Design';export default function Page(){return <Screen title="إضافة مهمة أو معاملة"><Unavailable feature="إضافة مهمة أو معاملة"/></Screen>}
+import {useRouter} from 'expo-router';import {Screen,Glass,Button} from '../src/ui/Design';export default function Add(){const r=useRouter();return <Screen title="إضافة"><Glass><Button label="مهمة أو موعد" onPress={()=>r.replace('/tasks')}/><Button label="معاملة مالية" onPress={()=>r.replace('/money')}/><Button label="منبه" onPress={()=>r.replace('/alarms')}/></Glass></Screen>}
