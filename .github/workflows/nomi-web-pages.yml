@@ -21,7 +21,7 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          ref: f3c221ce5f451e804cbe9da32c2fc9c9e1e39e34
+          ref: 96e9305533e4c85bd0c8eae54bc8e65a6ac22575
           persist-credentials: false
       - run: node --input-type=module --check < v2/web/app.js
       - uses: actions/configure-pages@v5
