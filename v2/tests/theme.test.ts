@@ -1,0 +1,6 @@
+import test from 'node:test';import assert from 'node:assert/strict';import {palette} from '../src/ui/theme.ts';import {normalizePhone} from '../src/domain/phone.ts';
+function rgb(hex:string){return [1,3,5].map(i=>parseInt(hex.slice(i,i+2),16))}
+function lum(a:number[]){return a.map(v=>{const s=v/255;return s<=.04045?s/12.92:((s+.055)/1.055)**2.4}).reduce((n,v,i)=>n+v*[.2126,.7152,.0722][i]!,0)}
+function contrast(a:number[],b:number[]){const x=lum(a),y=lum(b);return (Math.max(x,y)+.05)/(Math.min(x,y)+.05)}
+for(const variant of ['green','purple'] as const)for(const mode of ['light','dark'] as const)test(variant+' '+mode+' contrast',()=>{const p=palette(variant,mode);for(const bg of [p.background,p.top,p.bottom,p.tint,...(mode==='dark'?[p.surface]:[])])for(const fg of [p.text,p.muted,p.primary])assert.ok(contrast(rgb(fg),rgb(bg))>=4.5,fg+' on '+bg+' '+contrast(rgb(fg),rgb(bg)));for(const bg of [p.buttonStart,p.buttonEnd,p.deep])assert.ok(contrast(rgb('#FFFFFF'),rgb(bg))>=4.5,'white on '+bg)});
+test('Egypt and Jordan phone normalization',()=>{assert.equal(normalizePhone('٠١٠١٢٣٤٥٦٧٨','EG'),'+201012345678');assert.equal(normalizePhone('+962791234567','JO'),'+962791234567');assert.equal(normalizePhone('01012345678','JO'),null);assert.equal(normalizePhone('123','EG'),null)});

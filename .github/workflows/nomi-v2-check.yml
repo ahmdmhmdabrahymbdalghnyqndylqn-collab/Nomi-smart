@@ -28,8 +28,6 @@ jobs:
     needs: verify
     if: github.ref == 'refs/heads/nomi-v2-foundation'
     runs-on: ubuntu-latest
-    permissions:
-      contents: write
     strategy:
       fail-fast: false
       matrix:
@@ -60,7 +58,54 @@ jobs:
           name: Nomi-${{ matrix.variant }}-Preview
           path: v2/Nomi-${{ matrix.variant }}-Preview.apk
           if-no-files-found: error
-      - name: Publish explicitly experimental build
+  smoke:
+    needs: preview
+    runs-on: ubuntu-latest
+    timeout-minutes: 35
+    strategy:
+      fail-fast: false
+      matrix:
+        variant: [green, purple]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/download-artifact@v4
+        with:
+          name: Nomi-${{ matrix.variant }}-Preview
+          path: apk
+      - name: Enable KVM for Android emulator
+        run: |
+          echo 'KERNEL=="kvm", GROUP="kvm", MODE="0666", OPTIONS+="static_node=kvm"' | sudo tee /etc/udev/rules.d/99-kvm4all.rules
+          sudo udevadm control --reload-rules
+          sudo udevadm trigger --name-match=kvm
+      - uses: reactivecircus/android-emulator-runner@v2
+        with:
+          api-level: 35
+          target: google_apis
+          arch: x86_64
+          profile: pixel_6
+          disable-animations: true
+          script: python3 v2/tests/android_smoke.py ${{ matrix.variant }}
+      - uses: actions/upload-artifact@v4
+        if: always()
+        with:
+          name: Nomi-${{ matrix.variant }}-screenshots
+          path: qa-screenshots/
+          if-no-files-found: warn
+  release:
+    needs: [preview, smoke]
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    strategy:
+      matrix:
+        variant: [green, purple]
+    steps:
+      - uses: actions/download-artifact@v4
+        with:
+          name: Nomi-${{ matrix.variant }}-Preview
+          path: apk
+      - name: Publish explicitly experimental build after smoke test
         env:
           GH_TOKEN: ${{ github.token }}
-        run: gh release create "v2-preview-${{ matrix.variant }}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" "Nomi-${{ matrix.variant }}-Preview.apk" --target "$GITHUB_SHA" --prerelease --title "Nomi ${{ matrix.variant }} experimental preview" --notes "Local preview; cloud sync, Google configuration, full adhan, persistent alarm and device QA not complete. Not for production."
+          GH_REPO: ${{ github.repository }}
+        run: gh release create "v2-preview-${{ matrix.variant }}-${GITHUB_RUN_ID}-${GITHUB_RUN_ATTEMPT}" "apk/Nomi-${{ matrix.variant }}-Preview.apk" --target "$GITHUB_SHA" --prerelease --title "Nomi ${{ matrix.variant }} experimental preview" --notes "Local preview with Android smoke checks; not a production release. No cloud sync; full adhan, persistent alarm, visual reference review remain."
