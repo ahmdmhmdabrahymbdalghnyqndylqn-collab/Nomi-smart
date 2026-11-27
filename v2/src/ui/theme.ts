@@ -2,5 +2,5 @@ export type Variant='green'|'purple';
 export type Mode='light'|'dark';
 export const palette=(variant:Variant,mode:Mode)=>{
  const dark=mode==='dark',purple=variant==='purple';
- return {background:dark?(purple?'#1B1524':'#101D17'):(purple?'#F4EEFB':'#EDF8F2'),surface:dark?(purple?'#30263F':'#193428'):'rgba(255,255,255,0.84)',text:dark?'#F5F9F6':purple?'#302348':'#16342A',muted:dark?'#C1D7CD':'#4B675C',primary:dark?(purple?'#D1B2FF':'#8EE5B0'):(purple?'#6940A2':'#137B4C'),accent:purple?'#A478E2':'#26BC70',border:dark?'#51675D':'#FFFFFF',tint:dark?(purple?'#443458':'#254B36'):(purple?'#EADDFA':'#D9F2E4')};
+ return {background:dark?(purple?'#15101D':'#101718'):(purple?'#E8E5EF':'#DCE9EA'),surface:dark?(purple?'#241D30':'#182525'):'rgba(247,252,253,0.56)',text:dark?'#F2F9F8':'#101E24',muted:dark?'#B7C9CE':'#506570',primary:dark?(purple?'#C4A2FF':'#66F5A2'):(purple?'#7950C2':'#128345'),accent:purple?'#AA82EF':'#28D86D',border:dark?(purple?'#504263':'#36534C'):'rgba(255,255,255,0.85)',tint:dark?(purple?'#332641':'#233C34'):(purple?'#E2D5F4':'#CBEBDB'),top:dark?(purple?'#20172B':'#14221D'):(purple?'#D9C9ED':'#B4E0C9'),bottom:dark?(purple?'#0E0A16':'#0A1412'):(purple?'#D5C9E7':'#C3DEDA'),shine:purple?'#E4CBFF':'#B9FFD0',deep:purple?'#6735B3':'#08783A',row:dark?'rgba(110,150,145,0.09)':'rgba(223,235,237,0.64)',onPrimary:'#FFFFFF'};
 };
