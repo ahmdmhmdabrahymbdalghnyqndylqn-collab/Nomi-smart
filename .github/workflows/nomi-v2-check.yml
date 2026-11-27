@@ -2,6 +2,11 @@ name: Nomi V2 foundation checks
 on:
   push:
     branches: [nomi-v2-foundation]
+    paths-ignore:
+      - 'v2/tests/android_smoke.py'
+      - 'v2/docs/qa.md'
+      - '.github/workflows/nomi-v2-retry-smoke.yml'
+      - '.github/workflows/nomi-v2-check.yml'
   workflow_dispatch:
 permissions:
   contents: read
