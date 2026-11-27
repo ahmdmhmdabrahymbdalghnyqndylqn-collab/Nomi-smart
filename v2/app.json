@@ -1,0 +1,22 @@
+{
+  "expo": {
+    "name": "Nomi V2 Preview",
+    "slug": "nomi-v2",
+    "scheme": "nomiv2preview",
+    "version": "0.1.0",
+    "orientation": "portrait",
+    "userInterfaceStyle": "automatic",
+    "plugins": [
+      "expo-router",
+      "expo-secure-store",
+      "expo-web-browser"
+    ],
+    "android": {
+      "package": "com.nomismart.preview",
+      "supportsRTL": true
+    },
+    "experiments": {
+      "typedRoutes": false
+    }
+  }
+}

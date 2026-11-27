@@ -1,0 +1,2 @@
+import {Screen,Glass,T,Button,useDesign} from '../src/ui/Design';import {useRouter} from 'expo-router';
+export default function Settings(){const d=useDesign(),r=useRouter();return <Screen title="الإعدادات"><Glass><T bold>المظهر</T><Button label="تبديل الوضع الليلي" onPress={d.toggleMode}/><Button label="تبديل الأخضر والبنفسجي" onPress={d.toggleVariant}/></Glass><Glass><Button label="تسجيل الدخول" onPress={()=>r.push('/login')}/><Button label="الصلاة والأذان" onPress={()=>r.push('/prayer')}/><Button label="الطقس" onPress={()=>r.push('/weather')}/></Glass></Screen>}
