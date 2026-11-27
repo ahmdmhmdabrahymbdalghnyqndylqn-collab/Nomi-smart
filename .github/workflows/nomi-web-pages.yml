@@ -6,6 +6,7 @@ on:
   workflow_dispatch:
 permissions:
   contents: read
+  actions: read
   pages: write
   id-token: write
 concurrency:
@@ -24,6 +25,34 @@ jobs:
           ref: be9059458c03ac21d7dfc21106795d3c7c910d2c
           persist-credentials: false
       - run: node --input-type=module --check < v2/web/app.js
+      - uses: actions/download-artifact@v4
+        with:
+          name: Nomi-green-Preview
+          run-id: 46044861191
+          github-token: ${{ github.token }}
+          path: v2/web/downloads
+      - uses: actions/download-artifact@v4
+        with:
+          name: Nomi-purple-Preview
+          run-id: 46044861191
+          github-token: ${{ github.token }}
+          path: v2/web/downloads
+      - name: Verify APKs and generate download page
+        run: |
+          python3 - <<'PY'
+          import pathlib, hashlib, zipfile
+          p=pathlib.Path('v2/web/downloads')
+          for v in ('green','purple'):
+              f=p/('Nomi-'+v+'-Preview.apk')
+              assert f.stat().st_size>10000000
+              with zipfile.ZipFile(f) as z:
+                  assert 'AndroidManifest.xml' in z.namelist()
+                  assert z.testzip() is None
+              print(f.name, f.stat().st_size, hashlib.sha256(f.read_bytes()).hexdigest())
+          PY
+          cat > v2/web/downloads/index.html <<'HTML'
+          <!doctype html><html lang="ar" dir="rtl"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Nomi APK</title><link rel="stylesheet" href="../style.css"><main><h1>تحميل نومي للأندرويد</h1><p>نسختان تجريبيتان اجتازتا اختبار التنقل وتغيير المظهر على المحاكي. البيانات محلية؛ لا مزامنة سحابية كاملة.</p><section><h2>الأخضر الثلجي</h2><a href="Nomi-green-Preview.apk" download>تحميل APK الأخضر</a></section><section><h2>البنفسجي الثلجي</h2><a href="Nomi-purple-Preview.apk" download>تحميل APK البنفسجي</a></section><a href="../">العودة للموقع</a></main></html>
+          HTML
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
